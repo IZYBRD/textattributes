@@ -14,7 +14,7 @@ public class Label: UILabel {
             var size = bounds.size
             size.width = min(size.width, preferredMaxLayoutWidth)
             size.height = 0
-            textContainer.size = size;
+            textContainer.size = size
         }
     }
     
@@ -26,11 +26,15 @@ public class Label: UILabel {
         didSet { textContainer.maximumNumberOfLines = numberOfLines }
     }
     
+    public override var lineBreakMode: NSLineBreakMode {
+        didSet { textContainer.lineBreakMode = lineBreakMode }
+    }
+    
     public override var preferredMaxLayoutWidth: CGFloat {
         didSet {
             var size = bounds.size
             size.width = min(size.width, preferredMaxLayoutWidth)
-            textContainer.size = size;
+            textContainer.size = size
         }
     }
     
@@ -39,7 +43,7 @@ public class Label: UILabel {
             var size = bounds.size
             size.width = min(size.width, preferredMaxLayoutWidth)
             size.height = 0
-            textContainer.size = size;
+            textContainer.size = size
         }
     }
     
@@ -109,7 +113,7 @@ public class Label: UILabel {
 fileprivate final class LayoutManager: NSLayoutManager {
     @available(iOS 13.0, *)
     public override func showCGGlyphs(_ glyphs: UnsafePointer<CGGlyph>, positions: UnsafePointer<CGPoint>, count glyphCount: Int, font: UIFont, textMatrix: CGAffineTransform, attributes: [NSAttributedString.Key : Any] = [:], in CGContext: CGContext) {
-        defer { super.showCGGlyphs(glyphs, positions: positions, count: glyphCount, font: font, textMatrix: textMatrix, attributes: attributes, in: CGContext); }
+        defer { super.showCGGlyphs(glyphs, positions: positions, count: glyphCount, font: font, textMatrix: textMatrix, attributes: attributes, in: CGContext) }
         guard let foregroundColor = attributes[.foregroundColor] as? UIColor else {  return }
         CGContext.setFillColor(foregroundColor.cgColor)
     }
