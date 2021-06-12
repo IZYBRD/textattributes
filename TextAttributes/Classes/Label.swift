@@ -18,8 +18,8 @@ public class Label: UILabel {
         }
     }
     
-    public override var attributedText: NSAttributedString! {
-        didSet { textStorage.setAttributedString(attributedText) }
+    public override var attributedText: NSAttributedString? {
+        didSet { textStorage.setAttributedString(attributedText ?? NSAttributedString()) }
     }
     
     public override var numberOfLines: Int {

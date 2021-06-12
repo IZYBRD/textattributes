@@ -94,11 +94,12 @@ public extension NSMutableAttributedString {
     func enumerateAttribute(_ attr: TextAttribute.Style,
                             options opts: NSAttributedString.EnumerationOptions = [],
                             in inRange: Range<String.Index>? = nil,
-                            using block: (Any?, Range<String.Index>) -> Void) {
-        let nsRange = inRange.map { NSRange(location: string.distance(from: string.startIndex, to: $0.lowerBound), length: string.distance(from: $0.lowerBound, to: $0.upperBound)) } ?? NSRange(location: 0, length: length)
+                            using block: (Any?, Range<String.UTF16View.Index>) -> Void) {
+        let nsRange = inRange.map { NSRange(location: string.utf16.distance(from: string.utf16.startIndex, to: $0.lowerBound), length: string.utf16.distance(from: $0.lowerBound, to: $0.upperBound)) }
+            ?? NSRange(location: 0, length: length)
         enumerateAttribute(attr.key, in: nsRange, options: opts) { attribute, range, stop in
-            let start = string.index(string.startIndex, offsetBy: range.location)
-            let end = string.index(string.startIndex, offsetBy: range.location + range.length)
+            let start = string.utf16.index(string.utf16.startIndex, offsetBy: range.location)
+            let end = string.utf16.index(string.utf16.startIndex, offsetBy: range.location + range.length)
             block(attribute, start..<end)
         }
     }
@@ -117,11 +118,11 @@ public extension NSMutableAttributedString {
                               options opts: String.CompareOptions = [],
                               in inRange: Range<String.Index>? = nil,
                               using block: (inout NSMutableAttributedString, Range<String.Index>) -> Void) {
-        let range = inRange ?? string.startIndex..<string.index(string.startIndex, offsetBy: length)
+        let range = inRange ?? string.utf16.startIndex..<string.utf16.index(string.utf16.startIndex, offsetBy: length)
         var start = range.lowerBound
         let end = range.upperBound
         let slice = string[range]
-        var substringRanges:[Range<String.Index>] = []
+        var substringRanges:[Range<String.UTF16View.Index>] = []
         while let subrange = slice.range(of: aString, options: opts, range: start..<end) {
             substringRanges.append(subrange)
             start = subrange.upperBound
