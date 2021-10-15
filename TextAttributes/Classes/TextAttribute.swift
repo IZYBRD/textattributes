@@ -14,6 +14,7 @@ public enum TextAttribute {
     case lineBreakMode(NSLineBreakMode)
     case lineSpacing(CGFloat)
     case textAlignment(NSTextAlignment)
+    case baselineOffset(CGFloat)
     
     case link(URL)
     
@@ -53,6 +54,9 @@ public enum TextAttribute {
             return style
         case .link(let url):
             return url
+
+        case .baselineOffset(let offset):
+            return offset
         }
     }
     
@@ -88,6 +92,9 @@ public enum TextAttribute {
             return .textAlignment
         case .link:
             return .link
+            
+        case .baselineOffset:
+            return .baselineOffset
         }
     }
     
@@ -108,6 +115,7 @@ public enum TextAttribute {
         case textAlignment
         
         case link
+        case baselineOffset
         
         var key: NSAttributedString.Key {
             switch self {
@@ -140,6 +148,9 @@ public enum TextAttribute {
             
             case .link:
                 return .link
+                
+            case .baselineOffset:
+                return .baselineOffset
             }
         }
     }
@@ -191,6 +202,9 @@ extension TextAttribute: Codable {
         
         case .link:
             self = .link(try container.decode(URL.self, forKey: .value))
+            
+        case .baselineOffset:
+            self = .baselineOffset(try container.decode(CGFloat.self, forKey: .value))
         }
     }
     
@@ -228,6 +242,9 @@ extension TextAttribute: Codable {
             
         case .link(let url):
             try container.encode(url, forKey: .value)
+            
+        case .baselineOffset(let offset):
+            try container.encode(offset, forKey: .value)
         }
     }
 }

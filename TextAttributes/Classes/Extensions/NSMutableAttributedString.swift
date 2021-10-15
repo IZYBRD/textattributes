@@ -6,7 +6,7 @@ public extension NSMutableAttributedString {
     ///
     /// - Returns: Returns self. Useful if you wish to chain multiple commands together
     @discardableResult func addAttribute(_ attr: TextAttribute,
-                                         in inRange: Range<String.Index>? = nil) -> NSMutableAttributedString {
+                                         in inRange: Range<String.UTF16View.Index>? = nil) -> NSMutableAttributedString {
         return addAttributes([attr], in: inRange)
     }
     
@@ -17,7 +17,7 @@ public extension NSMutableAttributedString {
     ///
     /// - Returns: Returns self. Useful if you wish to chain multiple commands together
     @discardableResult func addAttributes(_ attrs: [TextAttribute],
-                                          in inRange: Range<String.Index>? = nil) -> NSMutableAttributedString {
+                                          in inRange: Range<String.UTF16View.Index>? = nil) -> NSMutableAttributedString {
         let reduced = attrs.reduce(into: [NSAttributedString.Key: Any]()) { result, attribute in
             switch attribute {
             case .textAlignment, .lineSpacing, .lineBreakMode:
@@ -46,6 +46,8 @@ public extension NSMutableAttributedString {
                 break
             case .link:
                 break
+            case .baselineOffset:
+                break
             }
             result[attribute.key] = attribute.value
         }
@@ -64,7 +66,7 @@ public extension NSMutableAttributedString {
     @discardableResult func addAttribute(_ attr: TextAttribute,
                                          toOccurencesOfString aString: String,
                                          options opts: String.CompareOptions = [],
-                                         in inRange: Range<String.Index>? = nil) -> NSMutableAttributedString {
+                                         in inRange: Range<String.UTF16View.Index>? = nil) -> NSMutableAttributedString {
         return addAttributes([attr], toOccurencesOfString: aString, options: opts, in: inRange)
     }
     
@@ -79,7 +81,7 @@ public extension NSMutableAttributedString {
     @discardableResult func addAttributes(_ attrs: [TextAttribute],
                                           toOccurencesOfString aString: String,
                                           options opts: String.CompareOptions = [],
-                                          in inRange: Range<String.Index>? = nil) -> NSMutableAttributedString {
+                                          in inRange: Range<String.UTF16View.Index>? = nil) -> NSMutableAttributedString {
         enumerateOccurrences(of: aString, options: opts, in: inRange) { attributedString, range in
             attributedString.addAttributes(attrs)
         }
@@ -93,7 +95,7 @@ public extension NSMutableAttributedString {
     ///
     /// - Returns: Returns self. Useful if you wish to chain multiple commands together
     @discardableResult func removeAttribute(_ attr: TextAttribute.Style,
-                                            in inRange: Range<String.Index>? = nil) -> NSMutableAttributedString {
+                                            in inRange: Range<String.UTF16View.Index>? = nil) -> NSMutableAttributedString {
         return removeAttributes([attr], in: inRange)
     }
 
@@ -104,7 +106,7 @@ public extension NSMutableAttributedString {
     ///
     /// - Returns: Returns self. Useful if you wish to chain multiple commands together
     @discardableResult func removeAttributes(_ attrs: [TextAttribute.Style],
-                                             in inRange: Range<String.Index>? = nil) -> NSMutableAttributedString {
+                                             in inRange: Range<String.UTF16View.Index>? = nil) -> NSMutableAttributedString {
         attrs.forEach { attr in
             enumerateAttribute(attr, in: inRange) { attribute, range in
                 removeAttribute(attr.key, range: range)
@@ -124,7 +126,7 @@ public extension NSMutableAttributedString {
     @discardableResult func removeAttribute(_ attr: TextAttribute.Style,
                                             fromOccurencesOfString aString: String,
                                             options opts: String.CompareOptions = [],
-                                            in inRange: Range<String.Index>? = nil) -> NSAttributedString {
+                                            in inRange: Range<String.UTF16View.Index>? = nil) -> NSAttributedString {
         return removeAttributes([attr], fromOccurencesOfString: aString, options: opts, in: inRange)
     }
     
@@ -139,7 +141,7 @@ public extension NSMutableAttributedString {
     @discardableResult func removeAttributes(_ attrs: [TextAttribute.Style],
                                              fromOccurencesOfString aString: String,
                                              options opts: String.CompareOptions = [],
-                                             in inRange: Range<String.Index>? = nil) -> NSAttributedString {
+                                             in inRange: Range<String.UTF16View.Index>? = nil) -> NSAttributedString {
         enumerateOccurrences(of: aString, options: opts, in: inRange) { attributedString, range in
             attributedString.removeAttributes(attrs)
         }

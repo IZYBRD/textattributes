@@ -15,8 +15,8 @@ public extension NSMutableAttributedString {
     /// Raises an rangeException if any part of range lies beyond the end of the receiver’s
     /// characters. This method treats the length of the string as a valid range value that
     /// returns an empty string.
-    func attributedSubstring(from range: Range<String.Index>) -> NSAttributedString {
-        let nsRange = NSRange(location: string.distance(from: string.startIndex, to: range.lowerBound), length: string.distance(from: range.lowerBound, to: range.upperBound))
+    func attributedSubstring(from range: Range<String.UTF16View.Index>) -> NSAttributedString {
+        let nsRange = NSRange(location: string.utf16.distance(from: string.utf16.startIndex, to: range.lowerBound), length: string.utf16.distance(from: range.lowerBound, to: range.upperBound))
         return attributedSubstring(from: nsRange)
     }
 
@@ -27,8 +27,8 @@ public extension NSMutableAttributedString {
     ///   - attrString: The attributed string whose characters and attributes replace those in the specified range.
     ///
     /// Raises an rangeException if any part of range lies beyond the end of the receiver’s characters.
-    func replaceCharacters(in range: Range<String.Index>, with attrString: NSAttributedString) {
-        let nsRange = NSRange(location: string.distance(from: string.startIndex, to: range.lowerBound), length: string.distance(from: range.lowerBound, to: range.upperBound))
+    func replaceCharacters(in range: Range<String.UTF16View.Index>, with attrString: NSAttributedString) {
+        let nsRange = NSRange(location: string.utf16.distance(from: string.utf16.startIndex, to: range.lowerBound), length: string.utf16.distance(from: range.lowerBound, to: range.upperBound))
         replaceCharacters(in: nsRange, with: attrString)
     }
     
@@ -43,8 +43,8 @@ public extension NSMutableAttributedString {
     /// You may assign any name/value pair you wish to a range of characters. Raises an invalidArgumentException
     /// if name or value is nil and an rangeException if any part of aRange lies beyond the end of the receiver’s
     /// characters.
-    func addAttribute(_ attr: NSAttributedString.Key, value: Any, range: Range<String.Index>? = nil) {
-        let nsRange = range.map { NSRange(location: string.distance(from: string.startIndex, to: $0.lowerBound), length: string.distance(from: $0.lowerBound, to: $0.upperBound)) } ?? NSRange(location: 0, length: length)
+    func addAttribute(_ attr: NSAttributedString.Key, value: Any, range: Range<String.UTF16View.Index>? = nil) {
+        let nsRange = range.map { NSRange(location: string.utf16.distance(from: string.utf16.startIndex, to: $0.lowerBound), length: string.utf16.distance(from: $0.lowerBound, to: $0.upperBound)) } ?? NSRange(location: 0, length: length)
         addAttribute(attr, value: value, range: nsRange)
     }
 
@@ -58,8 +58,8 @@ public extension NSMutableAttributedString {
     /// You may assign any name/value pair you wish to a range of characters. Raises an invalidArgumentException
     /// if attributes is nil and an rangeException if any part of aRange lies beyond the end of the receiver’s
     /// characters.
-    func addAttributes(_ attrs: [NSAttributedString.Key: Any], range: Range<String.Index>? = nil) {
-        let nsRange = range.map { NSRange(location: string.distance(from: string.startIndex, to: $0.lowerBound), length: string.distance(from: $0.lowerBound, to: $0.upperBound)) } ?? NSRange(location: 0, length: length)
+    func addAttributes(_ attrs: [NSAttributedString.Key: Any], range: Range<String.UTF16View.Index>? = nil) {
+        let nsRange = range.map { NSRange(location: string.utf16.distance(from: string.utf16.startIndex, to: $0.lowerBound), length: string.utf16.distance(from: $0.lowerBound, to: $0.upperBound)) } ?? NSRange(location: 0, length: length)
         addAttributes(attrs, range: nsRange)
     }
 
@@ -71,8 +71,8 @@ public extension NSMutableAttributedString {
     ///   - range: The range of characters from which the specified attribute is removed.
     ///
     /// Raises an rangeException if any part of aRange lies beyond the end of the receiver’s characters.
-    func removeAttribute(_ name: NSAttributedString.Key, range: Range<String.Index>? = nil) {
-        let nsRange = range.map { NSRange(location: string.distance(from: string.startIndex, to: $0.lowerBound), length: string.distance(from: $0.lowerBound, to: $0.upperBound)) } ?? NSRange(location: 0, length: length)
+    func removeAttribute(_ name: NSAttributedString.Key, range: Range<String.UTF16View.Index>? = nil) {
+        let nsRange = range.map { NSRange(location: string.utf16.distance(from: string.utf16.startIndex, to: $0.lowerBound), length: string.utf16.distance(from: $0.lowerBound, to: $0.upperBound)) } ?? NSRange(location: 0, length: length)
         removeAttribute(name, range: nsRange)
     }
 }
@@ -116,8 +116,8 @@ public extension NSMutableAttributedString {
     ///     - The range of aString in the attributed string.
     func enumerateOccurrences(of aString: String,
                               options opts: String.CompareOptions = [],
-                              in inRange: Range<String.Index>? = nil,
-                              using block: (inout NSMutableAttributedString, Range<String.Index>) -> Void) {
+                              in inRange: Range<String.UTF16View.Index>? = nil,
+                              using block: (inout NSMutableAttributedString, Range<String.UTF16View.Index>) -> Void) {
         let range = inRange ?? string.utf16.startIndex..<string.utf16.index(string.utf16.startIndex, offsetBy: length)
         var start = range.lowerBound
         let end = range.upperBound
@@ -132,14 +132,14 @@ public extension NSMutableAttributedString {
         var offset = 0
         substringRanges.forEach { range in
             
-            let substringStart = string.index(range.lowerBound, offsetBy: offset)
-            let substringEnd = string.index(range.upperBound, offsetBy: offset)
+            let substringStart = string.utf16.index(range.lowerBound, offsetBy: offset)
+            let substringEnd = string.utf16.index(range.upperBound, offsetBy: offset)
             var substring = attributedSubstring(from: substringStart..<substringEnd).mutable
             let len = substring.length
             block(&substring, range)
             
-            let replacementStart = string.index(range.lowerBound, offsetBy: offset)
-            let replacementEnd = string.index(range.upperBound, offsetBy: offset)
+            let replacementStart = string.utf16.index(range.lowerBound, offsetBy: offset)
+            let replacementEnd = string.utf16.index(range.upperBound, offsetBy: offset)
             replaceCharacters(in: replacementStart..<replacementEnd, with: substring)
             offset = offset + (substring.length - len)
         }
@@ -154,7 +154,7 @@ public extension NSAttributedString {
     ///
     /// - Returns: Returns self. Useful if you wish to chain multiple commands together
     func addingAttribute(_ attr: TextAttribute,
-                         in inRange: Range<String.Index>? = nil) -> NSAttributedString {
+                         in inRange: Range<String.UTF16View.Index>? = nil) -> NSAttributedString {
         return addingAttributes([attr], in: inRange)
     }
     
@@ -165,7 +165,7 @@ public extension NSAttributedString {
     ///
     /// - Returns: Returns self. Useful if you wish to chain multiple commands together
     func addingAttributes(_ attrs: [TextAttribute],
-                          in inRange: Range<String.Index>? = nil) -> NSAttributedString {
+                          in inRange: Range<String.UTF16View.Index>? = nil) -> NSAttributedString {
         let string = mutable
         string.addAttributes(attrs, in: inRange)
         return NSAttributedString(attributedString: string)
@@ -182,7 +182,7 @@ public extension NSAttributedString {
     func addingAttribute(_ attr: TextAttribute,
                          toOccurencesOfString aString: String,
                          options opts: String.CompareOptions = [],
-                         in inRange: Range<String.Index>? = nil) -> NSAttributedString {
+                         in inRange: Range<String.UTF16View.Index>? = nil) -> NSAttributedString {
         return addingAttributes([attr], toOccurencesOfString: aString, options: opts, in: inRange)
     }
     
@@ -197,7 +197,7 @@ public extension NSAttributedString {
     func addingAttributes(_ attrs: [TextAttribute],
                           toOccurencesOfString aString: String,
                           options opts: String.CompareOptions = [],
-                          in inRange: Range<String.Index>? = nil) -> NSAttributedString {
+                          in inRange: Range<String.UTF16View.Index>? = nil) -> NSAttributedString {
         let string = mutable
         string.addAttributes(attrs, toOccurencesOfString: aString, options: opts, in: inRange)
         return NSAttributedString(attributedString: string)
@@ -210,7 +210,7 @@ public extension NSAttributedString {
     ///
     /// - Returns: Returns self. Useful if you wish to chain multiple commands together
     func removingAttribute(_ attr: TextAttribute.Style,
-                           in inRange: Range<String.Index>? = nil) -> NSAttributedString {
+                           in inRange: Range<String.UTF16View.Index>? = nil) -> NSAttributedString {
         removingAttributes([attr], in: inRange)
     }
 
@@ -221,7 +221,7 @@ public extension NSAttributedString {
     ///
     /// - Returns: Returns self. Useful if you wish to chain multiple commands together
     func removingAttributes(_ attrs: [TextAttribute.Style],
-                            in inRange: Range<String.Index>? = nil) -> NSAttributedString {
+                            in inRange: Range<String.UTF16View.Index>? = nil) -> NSAttributedString {
         let string = mutable
         string.removeAttributes(attrs, in: inRange)
         return NSAttributedString(attributedString: string)
@@ -238,7 +238,7 @@ public extension NSAttributedString {
     func removingAttribute(_ attr: TextAttribute.Style,
                            fromOccurencesOfString aString: String,
                            options opts: String.CompareOptions = [],
-                           in inRange: Range<String.Index>? = nil) -> NSAttributedString {
+                           in inRange: Range<String.UTF16View.Index>? = nil) -> NSAttributedString {
         return removingAttributes([attr], fromOccurencesOfString: aString, options: opts, in: inRange)
     }
     
@@ -253,9 +253,46 @@ public extension NSAttributedString {
     func removingAttributes(_ attrs: [TextAttribute.Style],
                             fromOccurencesOfString aString: String,
                             options opts: String.CompareOptions = [],
-                            in inRange: Range<String.Index>? = nil) -> NSAttributedString {
+                            in inRange: Range<String.UTF16View.Index>? = nil) -> NSAttributedString {
         let string = mutable
         string.removeAttributes(attrs, fromOccurencesOfString: aString, options: opts, in: inRange)
         return NSAttributedString(attributedString: string)
+    }
+}
+
+public extension NSAttributedString {
+    /// Maps attributed substrings with attribute name
+    /// - Parameters:
+    ///   - attrName: the attribute name
+    ///   - block: the block to perform for each substring
+    /// - Returns: the mapped strings
+    func map(_ attrName: NSAttributedString.Key, using block: (String) -> String) -> [String] {
+        var subStrs:[String] = []
+        let range = NSRange(location: 0, length: length)
+        enumerateAttribute(attrName, in: range, options: []) { attribute, range, stop in
+            subStrs.append(block(attributedSubstring(from: range).string))
+        }
+        return subStrs
+    }
+}
+
+public extension NSAttributedString {
+    /// Adds `.link` attribute keys to all recognized URLs in the attributed string
+    /// - Returns: the updated URL containing the link attributes
+    func linky() -> NSAttributedString {
+        let attributed = self.mutableCopy() as! NSMutableAttributedString
+        let string = attributed.string
+        
+        guard let detector = try? NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue) else { return self }
+        let matches = detector.matches(in: string, options: [], range: NSRange(location: 0, length: string.utf16.count))
+        
+        for match in matches {
+            guard let range = Range(match.range, in: string) else { continue }
+            let urlStr = string[range]
+            if let url = URL(string: String(urlStr)) {
+                attributed.addAttribute(.link(url), in: range)
+            }
+        }
+        return attributed
     }
 }
