@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
     s.name         = 'TextAttributes'
-    s.version      = '0.1.0'
+    s.version      = '0.1.1'
     s.summary      = 'An attributed string library'
     s.homepage     = 'https://www.github.com/joeypatino/textattributes'
     s.description  = <<-DESC
