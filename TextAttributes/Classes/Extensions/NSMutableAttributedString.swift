@@ -20,7 +20,7 @@ public extension NSMutableAttributedString {
                                           in inRange: Range<String.UTF16View.Index>? = nil) -> NSMutableAttributedString {
         let reduced = attrs.reduce(into: [NSAttributedString.Key: Any]()) { result, attribute in
             switch attribute {
-            case .textAlignment, .lineSpacing, .lineBreakMode:
+            case .textAlignment, .lineSpacing, .lineBreakMode, .paragraphSpacingBefore:
                 let existingStyle = (result[attribute.key] as? NSParagraphStyle) ?? NSParagraphStyle.default
                 let value = attribute.value as! NSParagraphStyle
                 result[attribute.key] = existingStyle + value
@@ -45,6 +45,16 @@ public extension NSMutableAttributedString {
             case .underlineStyle:
                 break
             case .link:
+                break
+            case .textAttachment:
+                if let attachment = attribute.value as? NSTextAttachment {
+                    append(NSAttributedString(attachment: attachment))
+                }
+                break
+            case .textAttachmentImage:
+                if let attachment = attribute.value as? NSTextAttachment {
+                    append(NSAttributedString(attachment: attachment))
+                }
                 break
             case .baselineOffset:
                 break

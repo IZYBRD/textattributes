@@ -11,12 +11,15 @@ public enum TextAttribute {
     case strikethroughStyle(NSStrikeThroughStyle)
     case strikethroughColor(UIColor)
     
+    case paragraphSpacingBefore(CGFloat)
     case lineBreakMode(NSLineBreakMode)
     case lineSpacing(CGFloat)
     case textAlignment(NSTextAlignment)
     case baselineOffset(CGFloat)
     
     case link(URL)
+    case textAttachment(NSTextAttachment)
+    case textAttachmentImage(UIImage)
     
     var value: Any {
         switch self {
@@ -40,6 +43,10 @@ public enum TextAttribute {
         case .strikethroughColor(let color):
             return color
             
+        case .paragraphSpacingBefore(let spacingBefore):
+            let style = NSParagraphStyle.default.mutableCopy() as! NSMutableParagraphStyle
+            style.paragraphSpacingBefore = spacingBefore
+            return style
         case .lineBreakMode(let lineBreakMode):
             let style = NSParagraphStyle.default.mutableCopy() as! NSMutableParagraphStyle
             style.lineBreakMode = lineBreakMode
@@ -52,8 +59,15 @@ public enum TextAttribute {
             let style = NSParagraphStyle.default.mutableCopy() as! NSMutableParagraphStyle
             style.alignment = alignment
             return style
+            
         case .link(let url):
             return url
+        case .textAttachment(let attachment):
+            return attachment
+        case .textAttachmentImage(let image):
+            let attachment = TextAttachment()
+            attachment.image = image
+            return attachment
 
         case .baselineOffset(let offset):
             return offset
@@ -84,14 +98,21 @@ public enum TextAttribute {
         case .strikethroughColor:
             return .strikethroughColor
             
+        case .paragraphSpacingBefore:
+            return .paragraphSpacingBefore
         case .lineBreakMode:
             return .lineBreakMode
         case .lineSpacing:
             return .lineSpacing
         case .textAlignment:
             return .textAlignment
+
         case .link:
             return .link
+        case .textAttachment:
+            return .textAttachment
+        case .textAttachmentImage:
+            return .textAttachementImage
             
         case .baselineOffset:
             return .baselineOffset
@@ -110,11 +131,14 @@ public enum TextAttribute {
         case strikethroughStyle
         case strikethroughColor
         
+        case paragraphSpacingBefore
         case lineBreakMode
         case lineSpacing
         case textAlignment
         
         case link
+        case textAttachment
+        case textAttachementImage
         case baselineOffset
         
         var key: NSAttributedString.Key {
@@ -127,7 +151,7 @@ public enum TextAttribute {
                 return .backgroundColor
             case .kern:
                 return .kern
-            
+                
             case .shadow:
                 return .shadow
             case .underlineStyle:
@@ -139,6 +163,8 @@ public enum TextAttribute {
             case .strikethroughColor:
                 return .strikethroughColor
                 
+            case .paragraphSpacingBefore:
+                return .paragraphStyle
             case .lineBreakMode:
                 return .paragraphStyle
             case .lineSpacing:
@@ -148,6 +174,10 @@ public enum TextAttribute {
             
             case .link:
                 return .link
+            case .textAttachment:
+                return .attachment
+            case .textAttachementImage:
+                return .attachment
                 
             case .baselineOffset:
                 return .baselineOffset
@@ -190,7 +220,9 @@ extension TextAttribute: Codable {
             self = .strikethroughStyle(NSStrikeThroughStyle(rawValue: rawValue))
         case .strikethroughColor:
             self = .strikethroughColor(try container.decode(Color.self, forKey: .value).uiColor)
-            
+
+        case .paragraphSpacingBefore:
+            self = .paragraphSpacingBefore(try container.decode(CGFloat.self, forKey: .value))
         case .lineBreakMode:
             let rawValue = try container.decode(Int.self, forKey: .value)
             self = .lineBreakMode(NSLineBreakMode(rawValue: rawValue) ?? NSLineBreakMode.byWordWrapping)
@@ -202,7 +234,17 @@ extension TextAttribute: Codable {
         
         case .link:
             self = .link(try container.decode(URL.self, forKey: .value))
+        
+        case .textAttachment:
+            let data = try container.decodeIfPresent(Data.self, forKey: .value) ?? Data()
+            let image = UIImage(data: data) ?? UIImage()
+            self = .textAttachment(NSTextAttachment(image: image))
             
+        case .textAttachementImage:
+            let data = try container.decodeIfPresent(Data.self, forKey: .value) ?? Data()
+            let image = UIImage(data: data) ?? UIImage()
+            self = .textAttachmentImage(image)
+
         case .baselineOffset:
             self = .baselineOffset(try container.decode(CGFloat.self, forKey: .value))
         }
@@ -233,6 +275,8 @@ extension TextAttribute: Codable {
         case .strikethroughColor(let color):
             try container.encode(Color(color: color), forKey: .value)
         
+        case .paragraphSpacingBefore(let spacingBefore):
+            try container.encode(spacingBefore, forKey: .value)
         case .lineBreakMode(let lineBreakMode):
             try container.encode(lineBreakMode.rawValue, forKey: .value)
         case .lineSpacing(let spacing):
@@ -242,7 +286,14 @@ extension TextAttribute: Codable {
             
         case .link(let url):
             try container.encode(url, forKey: .value)
-            
+        
+        case .textAttachment(let attachment):
+            let image = attachment.image ?? UIImage()
+            try container.encodeIfPresent(image.pngData(), forKey: .value)
+
+        case .textAttachmentImage(let image):
+            try container.encodeIfPresent(image.pngData(), forKey: .value)
+
         case .baselineOffset(let offset):
             try container.encode(offset, forKey: .value)
         }
@@ -355,5 +406,15 @@ internal struct Shadow: Codable {
         if let shadowColor = nsShadow.shadowColor as? UIColor {
             try container.encode(Color(color: shadowColor), forKey: .color)
         }
+    }
+}
+
+internal class TextAttachment: NSTextAttachment {
+    override func image(forBounds imageBounds: CGRect, textContainer: NSTextContainer?, characterIndex charIndex: Int) -> UIImage? {
+        super.image(forBounds: imageBounds, textContainer: textContainer, characterIndex: charIndex)
+    }
+
+    override func attachmentBounds(for textContainer: NSTextContainer?, proposedLineFragment lineFrag: CGRect, glyphPosition position: CGPoint, characterIndex charIndex: Int) -> CGRect {
+        super.attachmentBounds(for: textContainer, proposedLineFragment: lineFrag, glyphPosition: position, characterIndex: charIndex)
     }
 }

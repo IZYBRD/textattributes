@@ -1,3 +1,4 @@
+import UIKit
 public extension NSAttributedString {
     /// A mutable copy of the `NSAttributedString` instance
     var mutable: NSMutableAttributedString {
@@ -289,8 +290,14 @@ public extension NSAttributedString {
         for match in matches {
             guard let range = Range(match.range, in: string) else { continue }
             let urlStr = string[range]
-            if let url = URL(string: String(urlStr)) {
-                attributed.addAttribute(.link(url), in: range)
+            if urlStr.hasPrefix("https"), let url = URL(string: String(urlStr)) {
+                attributed.addAttributes([.link(url)], in: range)
+            } else if urlStr.hasPrefix("http"), let url = URL(string: String(urlStr)) {
+                attributed.addAttributes([.link(url)], in: range)
+            } else {
+                if let url = URL(string: "https://" + String(urlStr)) {
+                    attributed.addAttributes([.link(url)], in: range)
+                }
             }
         }
         return attributed

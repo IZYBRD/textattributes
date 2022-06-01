@@ -117,10 +117,12 @@ fileprivate final class LayoutManager: NSLayoutManager {
         guard let foregroundColor = attributes[.foregroundColor] as? UIColor else {  return }
         CGContext.setFillColor(foregroundColor.cgColor)
     }
-    
+
     public override func showCGGlyphs(_ glyphs: UnsafePointer<CGGlyph>, positions: UnsafePointer<CGPoint>, count glyphCount: Int, font: UIFont, matrix textMatrix: CGAffineTransform, attributes: [NSAttributedString.Key : Any] = [:], in graphicsContext: CGContext) {
-        defer { super.showCGGlyphs(glyphs, positions: positions, count: glyphCount, font: font, matrix: textMatrix, attributes: attributes, in: graphicsContext) }
-        guard let foregroundColor = attributes[.foregroundColor] as? UIColor else {  return }
-        graphicsContext.setFillColor(foregroundColor.cgColor)
+        if #unavailable(iOS 13.0) {
+            defer { super.showCGGlyphs(glyphs, positions: positions, count: glyphCount, font: font, matrix: textMatrix, attributes: attributes, in: graphicsContext) }
+            guard let foregroundColor = attributes[.foregroundColor] as? UIColor else {  return }
+            graphicsContext.setFillColor(foregroundColor.cgColor)
+        }
     }
 }
