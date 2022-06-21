@@ -2,7 +2,7 @@ public protocol LabelDelegate: AnyObject {
     func label(_ label: Label, didSelect link: URL)
 }
     
-public class Label: UILabel {
+open class Label: UILabel {
     public weak var delegate: LabelDelegate?
     
     fileprivate let textContainer = NSTextContainer()
@@ -47,12 +47,21 @@ public class Label: UILabel {
         }
     }
     
-    convenience init() {
-        self.init(frame: .zero)
+    public init() {
+        super.init(frame: .zero)
+        setup()
     }
-    
+
     override init(frame: CGRect) {
         super.init(frame: frame)
+        setup()
+    }
+    
+    required public init(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    private func setup() {
         textContainer.lineFragmentPadding = 0
         textContainer.maximumNumberOfLines = numberOfLines
         textContainer.lineBreakMode = lineBreakMode
@@ -62,10 +71,6 @@ public class Label: UILabel {
         isUserInteractionEnabled = true
     }
     
-    required init(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
     public override func layoutSubviews() {
         super.layoutSubviews()
         textContainer.size = frame.size
@@ -111,18 +116,9 @@ public class Label: UILabel {
 
 /// NSLayoutManager to force the foreground attribute color for .link attributes
 fileprivate final class LayoutManager: NSLayoutManager {
-    @available(iOS 13.0, *)
     public override func showCGGlyphs(_ glyphs: UnsafePointer<CGGlyph>, positions: UnsafePointer<CGPoint>, count glyphCount: Int, font: UIFont, textMatrix: CGAffineTransform, attributes: [NSAttributedString.Key : Any] = [:], in CGContext: CGContext) {
         defer { super.showCGGlyphs(glyphs, positions: positions, count: glyphCount, font: font, textMatrix: textMatrix, attributes: attributes, in: CGContext) }
         guard let foregroundColor = attributes[.foregroundColor] as? UIColor else {  return }
         CGContext.setFillColor(foregroundColor.cgColor)
-    }
-
-    public override func showCGGlyphs(_ glyphs: UnsafePointer<CGGlyph>, positions: UnsafePointer<CGPoint>, count glyphCount: Int, font: UIFont, matrix textMatrix: CGAffineTransform, attributes: [NSAttributedString.Key : Any] = [:], in graphicsContext: CGContext) {
-        if #unavailable(iOS 13.0) {
-            defer { super.showCGGlyphs(glyphs, positions: positions, count: glyphCount, font: font, matrix: textMatrix, attributes: attributes, in: graphicsContext) }
-            guard let foregroundColor = attributes[.foregroundColor] as? UIColor else {  return }
-            graphicsContext.setFillColor(foregroundColor.cgColor)
-        }
     }
 }

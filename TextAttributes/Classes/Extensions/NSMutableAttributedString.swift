@@ -20,7 +20,7 @@ public extension NSMutableAttributedString {
                                           in inRange: Range<String.UTF16View.Index>? = nil) -> NSMutableAttributedString {
         let reduced = attrs.reduce(into: [NSAttributedString.Key: Any]()) { result, attribute in
             switch attribute {
-            case .textAlignment, .lineSpacing, .lineBreakMode, .paragraphSpacingBefore:
+            case .textAlignment, .lineSpacing, .lineBreakMode, .paragraphSpacingBefore, .lineHeightMultiple:
                 let existingStyle = (result[attribute.key] as? NSParagraphStyle) ?? NSParagraphStyle.default
                 let value = attribute.value as! NSParagraphStyle
                 result[attribute.key] = existingStyle + value

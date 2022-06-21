@@ -14,6 +14,7 @@ public enum TextAttribute {
     case paragraphSpacingBefore(CGFloat)
     case lineBreakMode(NSLineBreakMode)
     case lineSpacing(CGFloat)
+    case lineHeightMultiple(CGFloat)
     case textAlignment(NSTextAlignment)
     case baselineOffset(CGFloat)
     
@@ -54,6 +55,10 @@ public enum TextAttribute {
         case .lineSpacing(let lineSpacing):
             let style = NSParagraphStyle.default.mutableCopy() as! NSMutableParagraphStyle
             style.lineSpacing = lineSpacing
+            return style
+        case .lineHeightMultiple(let lineHeightMultiple):
+            let style = NSParagraphStyle.default.mutableCopy() as! NSMutableParagraphStyle
+            style.lineHeightMultiple = lineHeightMultiple
             return style
         case .textAlignment(let alignment):
             let style = NSParagraphStyle.default.mutableCopy() as! NSMutableParagraphStyle
@@ -104,6 +109,8 @@ public enum TextAttribute {
             return .lineBreakMode
         case .lineSpacing:
             return .lineSpacing
+        case .lineHeightMultiple:
+            return .lineHeightMultiple
         case .textAlignment:
             return .textAlignment
 
@@ -134,6 +141,7 @@ public enum TextAttribute {
         case paragraphSpacingBefore
         case lineBreakMode
         case lineSpacing
+        case lineHeightMultiple
         case textAlignment
         
         case link
@@ -168,6 +176,8 @@ public enum TextAttribute {
             case .lineBreakMode:
                 return .paragraphStyle
             case .lineSpacing:
+                return .paragraphStyle
+            case .lineHeightMultiple:
                 return .paragraphStyle
             case .textAlignment:
                 return .paragraphStyle
@@ -228,6 +238,8 @@ extension TextAttribute: Codable {
             self = .lineBreakMode(NSLineBreakMode(rawValue: rawValue) ?? NSLineBreakMode.byWordWrapping)
         case .lineSpacing:
             self = .lineSpacing(try container.decode(CGFloat.self, forKey: .value))
+        case .lineHeightMultiple:
+            self = .lineHeightMultiple(try container.decode(CGFloat.self, forKey: .value))
         case .textAlignment:
             let rawValue = try container.decode(Int.self, forKey: .value)
             self = .textAlignment(NSTextAlignment(rawValue: rawValue) ?? .justified)
@@ -281,6 +293,8 @@ extension TextAttribute: Codable {
             try container.encode(lineBreakMode.rawValue, forKey: .value)
         case .lineSpacing(let spacing):
             try container.encode(spacing, forKey: .value)
+        case .lineHeightMultiple(let lineHeightMultiple):
+            try container.encode(lineHeightMultiple, forKey: .value)
         case .textAlignment(let style):
             try container.encode(style.rawValue, forKey: .value)
             
