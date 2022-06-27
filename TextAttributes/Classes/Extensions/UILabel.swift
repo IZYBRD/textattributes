@@ -1,4 +1,4 @@
-internal extension UILabel {
+public extension UILabel {
     func glyphIndex(at location: CGPoint) -> Int? {
         
         // the text container
