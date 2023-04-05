@@ -3,28 +3,39 @@
 ![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
 
-# TextAttributes
-<br />
-<p align="left">
-    A library for constructing and modifying NSAttributedStrings
-</p>
 
-## Requirements
+## TextAttributes
 
-- iOS 12.1+
+TextAttributes is a Swift library for creating and modifying NSAttributedStrings. It provides a simple and strongly typed API for building complex text attributes, making it easy to create rich text with bold, italic, underlined, colored, and other stylized text.
+
+### Features
+
+- Simple and strongly typed API for creating NSAttributedStrings
+- Easy to apply text attributes such as font, color, kerning, and more
+- Customize paragraph styles, including indentation, line spacing, and alignment
+
+### Requirements
+
+- iOS 12.0+
+- Swift 5.0+
 
 ## Installation
 
 #### CocoaPods
+
 You can use [CocoaPods](http://cocoapods.org/) to install `TextAttributes` by adding it to your `Podfile`:
 
 ```ruby
-platform :ios, '12.1'
+platform :ios, '12.0'
 use_frameworks!
 pod 'TextAttributes', :git => 'git@github.com:joeypatino/textattributes.git'
 ```
 
-## Usage example
+Then, run the `pod install` command to install the library.
+
+## Usage
+
+Here's are some examples of how to use TextAttributes:
 
 #### Example One
 
@@ -78,14 +89,15 @@ label.attributedText = attributedString
   <img height="60" src="repository_assets/example_three.png" />
 </p>
 
-<br />
-<br />
 
-See `TextAttribute.swift`, `NSAttributedString.swift`, `NSMutableAttributedString.swift` for documentation details. 
-You can also find a demo app TextAttributesDemo included in the repo.
+### Contributing
+
+Contributions to TextAttributes are welcome! If you find a bug or would like to make an improvement, please report it on the project's GitHub page at https://github.com/joeypatino/textattributes.
 
 ### Meta
 
-Joey Patino – [@nsinvalidarg](https://twitter.com/nsinvalidarg) – joey.patino@protonmail.com
+Joey Patino – [@nsinvalidarg](https://twitter.com/nsinvalidarg) – joey.patino@pm.me
 
-Distributed under the MIT license
+### License
+
+TextAttributes is released under the MIT License. See the LICENSE file for details.
