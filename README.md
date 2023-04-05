@@ -6,13 +6,13 @@
 
 ## TextAttributes
 
-TextAttributes is a Swift library for creating and modifying NSAttributedStrings. It provides a simple and strongly typed API for building complex text attributes, making it easy to create rich text with bold, italic, underlined, colored, and other stylized text.
+TextAttributes is a Swift library that simplifies the creation and modification of NSAttributedStrings. Its intuitive, strongly typed API enables easy creation of rich text with attributes such as bold, italic, underlined, colored text and more.
 
 ### Features
 
-- Simple and strongly typed API for creating NSAttributedStrings
-- Easy to apply text attributes such as font, color, kerning, and more
-- Customize paragraph styles, including indentation, line spacing, and alignment
+- Simple, intuitive, and strongly typed API for building complex text attributes
+- Easy application of text attributes such as font, color, kerning, and more
+- Customizable paragraph styles, including indentation, line spacing, and alignment
 
 ### Requirements
 
@@ -90,7 +90,7 @@ label.attributedText = attributedString
 </p>
 
 
-### Contributing
+## Contributing
 
 Contributions to TextAttributes are welcome! If you find a bug or would like to make an improvement, please report it on the project's GitHub page at https://github.com/joeypatino/textattributes.
 
